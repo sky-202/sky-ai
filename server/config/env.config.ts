@@ -4,6 +4,7 @@ config({path: `.env.${process.env.NODE_ENV || 'development'}.local`});
 
 export const {
     NODE_ENV, GeminiApiKey,
-    DATABASE_URL
+    DATABASE_URL,
+    JWT_SECRET, EXPIRES_IN,
 } = process.env;
 
