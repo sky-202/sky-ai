@@ -59,31 +59,31 @@ export const signUp = async (req: Request, res: Response) => {
 
 export const logIn = async (req: Request, res: Response) => {
     try {
-            const {email, password } = req.body;
+        const {email, password } = req.body;
 
-    const user = await prisma.user.findUnique({
-        where: {
-            email: email,
-        },
-    });
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+        });
 
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }   
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }   
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-        return res.status(401).json({ message : "Enter valid password" })
-    }
+        if (!isPasswordValid) {
+            return res.status(401).json({ message : "Enter valid password" })
+        }
 
-    const token = jwt.sign({userId: user.id}, JWT_SECRET as string,  {expiresIn: EXPIRES_IN as any});
+        const token = jwt.sign({userId: user.id}, JWT_SECRET as string,  {expiresIn: EXPIRES_IN as any});
 
-    res.cookie("token", token, {
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+        res.cookie("token", token, {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
     return res.status(200).json({
         success: true,
