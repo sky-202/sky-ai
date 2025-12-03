@@ -1,6 +1,7 @@
 import express, { type Request, type Response, json} from 'express';
-import cookieParser from 'cookie-parser'
-import authRouter from './routes/authRoute'
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/authRoute';
+import userRouter from './routes/userRoute';
 
 const app = express(); 
 
@@ -11,6 +12,7 @@ app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
 
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.send("tu dekh, ab tu dekh, esa app bana dunga kisine dekhi ni hogi...");
@@ -19,5 +21,3 @@ app.get('/', (req: Request, res: Response) => {
 app.listen(port, () => {
     console.log(`Server is listening to ${port}`);
 })
-
-
