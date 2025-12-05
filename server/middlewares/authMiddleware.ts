@@ -7,8 +7,8 @@ import { json } from 'stream/consumers';
 // yet to understand how this works and where else we can use this 
 declare global {
     namespace Express {
-        interface Request {
-            user?: any;
+        interface Request {          // <-- this
+            userId?: any;
         }
     }
 }
@@ -31,7 +31,7 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
 
         const user = await prisma.user.findUnique({ where: { id: parseInt(decoded.userId, 10) } })
 
-        req.user = user;
+        req.userId = user?.id;
 
         next();
 
