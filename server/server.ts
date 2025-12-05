@@ -2,6 +2,8 @@ import express, { type Request, type Response, json} from 'express';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/authRoute';
 import userRouter from './routes/userRoute';
+import messageRouter from './routes/messageRoute';
+import chatRouter from './routes/chatRoute';
 
 const app = express(); 
 
@@ -13,6 +15,8 @@ app.use(cookieParser())
 
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
+app.use('/chat', chatRouter);
+app.use('/message', messageRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.send("tu dekh, ab tu dekh, esa app bana dunga kisine dekhi ni hogi...");
