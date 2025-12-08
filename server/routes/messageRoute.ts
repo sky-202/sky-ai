@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { createMessage } from "../controllers/messageController";
+import { getMessagesByChatId } from "../controllers/messageController";
 
 const messageRouter = Router();
 
-messageRouter.post('/create-message', createMessage);
+messageRouter.get('get-messages', getMessagesByChatId)
 
 export default messageRouter;
+

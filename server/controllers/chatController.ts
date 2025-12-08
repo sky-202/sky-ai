@@ -12,7 +12,7 @@ export const createChat = async (req: Request, res: Response) => {
             return res.status(500).json({ message: "API key is not defined" });
         }
 
-        const SkyAi = new GoogleGenAI({ apiKey: GeminiApiKey as string });
+        const SkyAi = new GoogleGenAI({ apiKey: GeminiApiKey });
 
         const response = await SkyAi.models.generateContent({
             model: "gemini-2.5-flash",
@@ -61,3 +61,17 @@ export const createChat = async (req: Request, res: Response) => {
             .json({ message: "Server error", error: errorMessage });
     }
 };
+
+export const getChatsByUserId = async (req: Request, res: Response) => {
+
+}
+
+export const deleteChatById = async (req: Request, res: Response) => {
+
+}
+
+export const updateChatById = async (req: Request, res: Response) => {
+    // Edit the title of the chat
+}
+
+
