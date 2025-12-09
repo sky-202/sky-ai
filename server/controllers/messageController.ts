@@ -84,7 +84,6 @@ export const createMessage = async (req: Request, res: Response) => {
             ],
         });
 
-        console.log("14")
         return res.status(201).json({
             success: true,
             data: {
@@ -92,10 +91,8 @@ export const createMessage = async (req: Request, res: Response) => {
                 aiMessage: responseTxt
             }
         });
-        console.log("15")
 
     } catch (error) {
-        console.log("16")
         const errorMessage =
             error instanceof Error ? error.message : "Server error";
         return res
@@ -105,15 +102,131 @@ export const createMessage = async (req: Request, res: Response) => {
 };
 
 export const getMessagesByChatId = async (req: Request, res: Response) => {
-    // gets all the messages of the ChatId
+    try {
+        const id = req.params.id; 
+        const userId = req.userId;
+
+        if (!id) return res.status(400).json({ message: "Chat ID missing" });
+
+        const chatId = parseInt(id, 10);
+        if (isNaN(chatId)) return res.status(400).json({ message: "Invalid Chat ID" });
+
+        const chat = await prisma.chat.findUnique({
+            where: { id: chatId },
+            select: { userId: true } // Select only what we need
+        });
+
+        if (!chat) return res.status(404).json({ message: "Chat not found" });
+        
+        if (chat.userId !== userId) {
+            return res.status(403).json({ message: "Unauthorized access to this chat" });
+        }
+
+        // 2. Fetch Messages
+        const messages = await prisma.message.findMany({
+            where: { chatId: chatId },
+            orderBy: { createdAt: "asc" }, // Oldest first (chronological order)
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: messages,
+        });
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Server error";
+        return res.status(500).json({ message: "Server error", error: errorMessage });
+    }
 };
 
 export const updateMsg = async (req: Request, res: Response) => {
-    // update the poromt
+    try {
+        const id = req.params.id; 
+        const { message: newContent } = req.body;
+        const userId = req.userId;
+
+        if (!id) return res.status(400).json({ message: "Message ID missing" });
+        if (!newContent) return res.status(400).json({ message: "New content is required" });
+
+        const messageId = parseInt(id, 10);
+        if (isNaN(messageId)) return res.status(400).json({ message: "Invalid Message ID" });
+
+        // 1. Find the message and include Chat to check User ID
+        const existingMessage = await prisma.message.findUnique({
+            where: { id: messageId },
+            include: { chat: true } // Need this to check userId
+        });
+
+        if (!existingMessage) {
+            return res.status(404).json({ message: "Message not found" });
+        }
+
+        // 2. Ownership Check
+        if (existingMessage.chat.userId !== userId) {
+            return res.status(403).json({ message: "Unauthorized to update this message" });
+        }
+
+        // 3. Role Check: Prevent editing AI responses (Optional but recommended)
+        if (existingMessage.role !== "USER") {
+            return res.status(400).json({ message: "You can only edit your own prompts, not AI responses." });
+        }
+
+        // 4. Update
+        const updatedMessage = await prisma.message.update({
+            where: { id: messageId },
+            data: { content: newContent },
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: updatedMessage,
+        });
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Server error";
+        return res.status(500).json({ message: "Server error", error: errorMessage });
+    }
 };
 
 export const deleteMessage = async (req: Request, res: Response) => {
-    // can delete prompt or response
+    try {
+        const id = req.params.id; // Message ID
+        const userId = req.userId;
+
+        if (!id) return res.status(400).json({ message: "Message ID missing" });
+
+        const messageId = parseInt(id, 10);
+        if (isNaN(messageId)) return res.status(400).json({ message: "Invalid Message ID" });
+
+        // 1. Find Message to verify ownership
+        const existingMessage = await prisma.message.findUnique({
+            where: { id: messageId },
+            include: { chat: true }
+        });
+
+        if (!existingMessage) {
+            return res.status(404).json({ message: "Message not found" });
+        }
+
+        // 2. Ownership Check
+        if (existingMessage.chat.userId !== userId) {
+            return res.status(403).json({ message: "Unauthorized to delete this message" });
+        }
+
+        // 3. Delete
+        await prisma.message.delete({
+            where: { id: messageId },
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Message deleted successfully",
+        });
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Server error";
+        return res.status(500).json({ message: "Server error", error: errorMessage });
+    }
 };
 
 
