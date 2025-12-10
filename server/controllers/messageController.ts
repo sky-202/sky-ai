@@ -213,6 +213,10 @@ export const deleteMessage = async (req: Request, res: Response) => {
             return res.status(403).json({ message: "Unauthorized to delete this message" });
         }
 
+        if (existingMessage.role !== "USER") {
+            return res.status(403).json({message: "You are only authorized to delete the USER message."})
+        }
+
         // 3. Delete
         await prisma.message.delete({
             where: { id: messageId },

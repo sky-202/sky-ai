@@ -1,33 +1,29 @@
-// import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { GeminiApiKey } from "./config/env.config.ts";
 
 
-// const SkyAi = new GoogleGenAI({ apiKey: GeminiApiKey});
-
-// async function main() {
-//   const response = await SkyAi.models.generateContent({
-//     model: "gemini-2.5-flash",
-//     contents: "Who is narendra modi.",
-//     config: {
-//             thinkingConfig: {
-//                 thinkingBudget: 0,
-//             },
-//             systemInstruction: "You are a very fast ai assistant who give quick and precise information."
-//         }
-//   });
-//   console.log("reponse.text: ",response.text);
-//   console.log("response:",response);
-//   console.log("title: ", response.title)
-// }
-
-// main();
-
-
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({apiKey: GeminiApiKey});
+const SkyAi = new GoogleGenAI({ apiKey: GeminiApiKey});
 
 async function main() {
+  const response = await SkyAi.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: "Who is narendra modi.",
+    config: {
+            thinkingConfig: {
+                thinkingBudget: 0,
+            },
+            systemInstruction: "You are a very fast ai assistant who give quick and precise information."
+        }
+  });
+  console.log("reponse.text: ",response.text);
+  console.log("response:",response);
+  console.log("title: ", response.title)
+}
+
+main();
+
+
+async function main1() {
   const chat = ai.chats.create({
     model: "gemini-2.5-flash",
     history: [
@@ -53,4 +49,4 @@ async function main() {
   console.log("Chat response 2:", response2.text);
 }
 
-await main();
+// await main();
