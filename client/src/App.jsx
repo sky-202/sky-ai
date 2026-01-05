@@ -294,8 +294,8 @@ const ChatApp = ({ user, onLogout }) => {
       `}>
         <div className="p-4 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sky-500 font-bold text-xl">
-            <Sparkles className="w-6 h-6" />
-            <span>Sky AI</span>
+            <Sparkles className="w-12 h-16" />
+            <span>Sky Ai</span>
           </div>
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400">
             <X className="w-6 h-6" />
