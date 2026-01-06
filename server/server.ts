@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(cors({
     origin: [
             "http://localhost:5173", 
-            "https://your-frontend-project.onrender.com" 
+            "https://sky-ai-server.onrender.com"
         ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
