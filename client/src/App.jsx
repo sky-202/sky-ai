@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 // --- Constants ---
-const API_URL = 'http://localhost:3000'; // Pointing to your backend
+const API_URL = import.meta.env.VITE_API_URL
 
 // --- Components ---
 
